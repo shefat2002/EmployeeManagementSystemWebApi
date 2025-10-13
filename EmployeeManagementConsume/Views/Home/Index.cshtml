@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <div class="mb-3">
+            <label for="txtName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="txtName">
+            <input type="hidden" id="txtId" />
+        </div>
+        <div class="mb-3">
+            <label for="txtPosition" class="form-label">Position</label>
+            <input type="text" class="form-control" id="txtPosition">
+        </div>
+        <button type="button" class="btn btn-primary" id="btnsave">Submit</button>
+    </div>
+    <div class="col-md-8 col-sm-12">
+        <div>
+            <h2>Employee List</h2>
+            <table class="table table-bordered table-striped" id="">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>....</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    <!-- Employee data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            load();
+
+            $("#btnsave").click(function() {
+                alert("clicked");
+                let id = $("#txtId").val();
+                debugger;
+                if (id > 0) {
+                    Update();
+                } else {
+                    Save();
+                }
+            });
+
+            function Save() {
+                var employee = {
+                    Name: $("#txtName").val(),
+                    Position: $("#txtPosition").val()
+                };
+                debugger;
+                $.ajax({
+                    url: 'https://localhost:7148/api/Employees/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(employee),
+                    success: function (data) {
+                        console.log(data);
+                        clearALL();
+                        load();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error saving employee data:', error);
+                    }
+                });
+            }
+
+            function Update() {
+                debugger;
+                var employee = {
+                    Name: $("#txtName").val(),
+                    Position: $("#txtPosition").val(),
+                    Id: $("#txtId").val()
+                };
+                console.log(employee);
+                $.ajax({
+                    url: 'https://localhost:7148/api/Employees/' + employee.Id,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(employee),
+                    success: function (data) {
+                        console.log(data);
+                        load();
+                        clearALL();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error fetching employee data:', error);
+                    }
+                });
+            }
+        }); //document
+
+        function clearALL() {
+            $("#txtName").val('');
+            $("#txtPosition").val('');
+            $("#txtId").val('');
+        }
+
+        function load() {
+            $.ajax({
+                url: 'https://localhost:7148/api/Employees',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    var tbody = $("#employeeTableBody");
+                    tbody.empty();
+
+                    $.each(data, function(index, employee) {
+                        let tr = '<tr><td>' + employee.Id + '</td>' +
+                                '<td>' + employee.Name + '</td>' +
+                                '<td>' + employee.Position + '</td>' +
+                                '<td><button class="btn btn-warning mr-3" type="button" onclick="Edit(' + employee.Id + ')">Edit</button> || ' +
+                                '<button class="btn btn-warning" type="button" onclick="Delete(' + employee.Id + ')">Delete</button></td></tr>';
+                        tbody.append(tr);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error fetching employee data:', error);
+                }
+            });
+        }
+
+        function Edit(id) {
+            $.ajax({
+                url: 'https://localhost:7148/api/Employees/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    debugger;
+                    $("#txtName").val(data.Name);
+                    $("#txtPosition").val(data.Position);
+                    $("#txtId").val(data.Id);
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error fetching employee data:', error);
+                }
+            });
+        }
+
+        function Delete(id) {
+            $.ajax({
+                url: 'https://localhost:7148/api/Employees/' + id,
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    // $("#txtName").val(data.Name)
+                    // $("#txtPosition").val(data.Position)
+                    // $("#txtId").val(data.Id)
+                    load();
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error fetching employee data:', error);
+                }
+            });
+        }
+    </script>
+}
