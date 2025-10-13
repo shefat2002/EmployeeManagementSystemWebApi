@@ -40,7 +40,6 @@
             load();
 
             $("#btnsave").click(function() {
-                alert("clicked");
                 let id = $("#txtId").val();
                 debugger;
                 if (id > 0) {
@@ -55,9 +54,9 @@
                     Name: $("#txtName").val(),
                     Position: $("#txtPosition").val()
                 };
-                debugger;
+                // debugger;
                 $.ajax({
-                    url: 'https://localhost:7148/api/Employees/',
+                    url: 'https://localhost:7164/api/Employees/',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(employee),
@@ -81,7 +80,7 @@
                 };
                 console.log(employee);
                 $.ajax({
-                    url: 'https://localhost:7148/api/Employees/' + employee.Id,
+                    url: 'https://localhost:7164/api/Employees/' + employee.Id,
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(employee),
@@ -105,7 +104,7 @@
 
         function load() {
             $.ajax({
-                url: 'https://localhost:7148/api/Employees',
+                url: 'https://localhost:7164/api/Employees',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -130,7 +129,7 @@
 
         function Edit(id) {
             $.ajax({
-                url: 'https://localhost:7148/api/Employees/' + id,
+                url: 'https://localhost:7164/api/Employees/' + id,
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -148,7 +147,7 @@
 
         function Delete(id) {
             $.ajax({
-                url: 'https://localhost:7148/api/Employees/' + id,
+                url: 'https://localhost:7164/api/Employees/' + id,
                 type: 'DELETE',
                 dataType: 'json',
                 success: function (data) {
