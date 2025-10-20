@@ -3,26 +3,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeMVC_Consume.Controllers;
 
-public class EmployeesController : Controller
+public class DepartmentsController : Controller
 {
    private readonly IHttpClientFactory _httpClientfactory;
    private readonly HttpClient _httpClient;
-   public EmployeesController(IHttpClientFactory httpClient)
+   public DepartmentsController(IHttpClientFactory httpClient)
    {
       _httpClient = httpClient.CreateClient();
       _httpClient.BaseAddress = new Uri("https://localhost:7164/api/"); // Replace with your API base address
       _httpClient.DefaultRequestHeaders.Accept.Clear();
       _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
    }
-
    public async Task<IActionResult> Index()
    {
-
-      var response = await _httpClient.GetAsync("Employees");
+      var response = await _httpClient.GetAsync("Departments");
       if (response.IsSuccessStatusCode)
       {
-         var employees = await response.Content.ReadFromJsonAsync<IEnumerable<EmployeeVM>>();
-         return View(employees);
+         var departments = await response.Content.ReadFromJsonAsync<IEnumerable<DepartmentVM>>();
+         return View(departments);
       }
       else
       {
@@ -35,13 +33,11 @@ public class EmployeesController : Controller
       return View();
    }
    [HttpPost]
-   public async Task<IActionResult> Create(EmployeeVM employee)
+   public async Task<IActionResult> Create(DepartmentVM department)
    {
       if (ModelState.IsValid)
       {
-
-         var response = await _httpClient.PostAsJsonAsync<EmployeeVM>("Employees", employee);
-         
+         var response = await _httpClient.PostAsJsonAsync<DepartmentVM>("Departments", department);
          if (response.IsSuccessStatusCode)
          {
             return RedirectToAction("Index");
@@ -51,20 +47,15 @@ public class EmployeesController : Controller
             ModelState.AddModelError(string.Empty, $"Error: {response.StatusCode} - {response.ReasonPhrase}");
          }
       }
-      else
-      {
-           ModelState.AddModelError(string.Empty, "Model state is invalid.");
-         return RedirectToAction("Create");
-      }
-      return View(employee);
+      return View(department);
    }
    public async Task<IActionResult> Edit(int id)
    {
-      var response = await _httpClient.GetAsync($"Employees/{id}");
+      var response = await _httpClient.GetAsync($"Departments/{id}");
       if (response.IsSuccessStatusCode)
       {
-         var employee = await response.Content.ReadFromJsonAsync<EmployeeVM>();
-         return View(employee);
+         var department = await response.Content.ReadFromJsonAsync<DepartmentVM>();
+         return View(department);
       }
       else
       {
@@ -73,11 +64,11 @@ public class EmployeesController : Controller
       }
    }
    [HttpPost]
-   public async Task<IActionResult> Edit(EmployeeVM employee)
+   public async Task<IActionResult> Edit(DepartmentVM department)
    {
       if (ModelState.IsValid)
       {
-         var response = await _httpClient.PutAsJsonAsync<EmployeeVM>($"Employees/{employee.Id}", employee);
+         var response = await _httpClient.PutAsJsonAsync<DepartmentVM>($"Departments/{department.Id}", department);
          if (response.IsSuccessStatusCode)
          {
             return RedirectToAction("Index");
@@ -87,11 +78,11 @@ public class EmployeesController : Controller
             ModelState.AddModelError(string.Empty, $"Error: {response.StatusCode} - {response.ReasonPhrase}");
          }
       }
-      return View(employee);
+      return View(department);
    }
    public async Task<IActionResult> Delete(int id)
    {
-      var response = await _httpClient.DeleteAsync($"Employees/{id}");
+      var response = await _httpClient.DeleteAsync($"Departments/{id}");
       if (response.IsSuccessStatusCode)
       {
          return RedirectToAction("Index");
@@ -102,4 +93,5 @@ public class EmployeesController : Controller
          return RedirectToAction("Index");
       }
    }
+
 }
