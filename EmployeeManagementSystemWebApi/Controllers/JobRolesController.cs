@@ -24,14 +24,14 @@ namespace EmployeeManagementSystemWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobRole>>> GetJobRole()
         {
-            return await _context.JobRole.ToListAsync();
+            return await _context.JobRoles.ToListAsync();
         }
 
         // GET: api/JobRoles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<JobRole>> GetJobRole(int id)
         {
-            var jobRole = await _context.JobRole.FindAsync(id);
+            var jobRole = await _context.JobRoles.FindAsync(id);
 
             if (jobRole == null)
             {
@@ -77,7 +77,7 @@ namespace EmployeeManagementSystemWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<JobRole>> PostJobRole(JobRole jobRole)
         {
-            _context.JobRole.Add(jobRole);
+            _context.JobRoles.Add(jobRole);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetJobRole", new { id = jobRole.Id }, jobRole);
@@ -87,13 +87,13 @@ namespace EmployeeManagementSystemWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteJobRole(int id)
         {
-            var jobRole = await _context.JobRole.FindAsync(id);
+            var jobRole = await _context.JobRoles.FindAsync(id);
             if (jobRole == null)
             {
                 return NotFound();
             }
 
-            _context.JobRole.Remove(jobRole);
+            _context.JobRoles.Remove(jobRole);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +101,7 @@ namespace EmployeeManagementSystemWebApi.Controllers
 
         private bool JobRoleExists(int id)
         {
-            return _context.JobRole.Any(e => e.Id == id);
+            return _context.JobRoles.Any(e => e.Id == id);
         }
     }
 }
