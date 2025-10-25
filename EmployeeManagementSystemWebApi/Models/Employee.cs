@@ -18,5 +18,17 @@ public class Employee
     [ValidateNever]
     public JobRole JobRole { get; set; } = null!;
 
+    [ValidateNever]
+    public EmployeeSalary? EmployeeSalary { get; set; } 
+
+    [ValidateNever]
+    public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+
+    [ValidateNever]
+    public ICollection<Payroll> Payrolls { get; set; } = new List<Payroll>();
+
+    [ValidateNever]
+    public ICollection<LeaveApplication> LeaveApplications { get; set; } = new List<LeaveApplication>();
+
 
 }
