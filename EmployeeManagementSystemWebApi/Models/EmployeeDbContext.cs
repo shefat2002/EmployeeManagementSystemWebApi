@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using EmployeeManagementSystemWebApi.Models;
 
 namespace EmployeeManagementSystemWebApi.Models;
 
@@ -9,6 +10,6 @@ public class EmployeeDbContext : DbContext
    }
    public DbSet<Employee> Employees { get; set; } = null!;
    public DbSet<Department> Departments { get; set; } = null!;
-   public DbSet<Project> Projects { get; set; } = null!;
-   public DbSet<EmployeeProjectAssignment> EmployeeProjectAssignments { get; set; } = null!;
+
+public DbSet<EmployeeManagementSystemWebApi.Models.JobRole> JobRole { get; set; } = default!;
 }

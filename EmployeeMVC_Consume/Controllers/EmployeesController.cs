@@ -1,11 +1,12 @@
 ﻿using EmployeeMVC_Consume.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 
 namespace EmployeeMVC_Consume.Controllers;
 
+
 public class EmployeesController : Controller
 {
-   private readonly IHttpClientFactory _httpClientfactory;
    private readonly HttpClient _httpClient;
    public EmployeesController(IHttpClientFactory httpClient)
    {
@@ -14,8 +15,7 @@ public class EmployeesController : Controller
       _httpClient.DefaultRequestHeaders.Accept.Clear();
       _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
    }
-
-   public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index()
    {
 
       var response = await _httpClient.GetAsync("Employees");
@@ -35,7 +35,7 @@ public class EmployeesController : Controller
       return View();
    }
    [HttpPost]
-   public async Task<IActionResult> Create(EmployeeVM employee)
+    public async Task<IActionResult> Create(EmployeeVM employee)
    {
       if (ModelState.IsValid)
       {
@@ -63,7 +63,8 @@ public class EmployeesController : Controller
       var response = await _httpClient.GetAsync($"Employees/{id}");
       if (response.IsSuccessStatusCode)
       {
-         var employee = await response.Content.ReadFromJsonAsync<EmployeeVM>();
+         var employee = await response.Content.ReadFromJsonAsync<EmployeeVM>(); 
+         
          return View(employee);
       }
       else
@@ -73,22 +74,26 @@ public class EmployeesController : Controller
       }
    }
    [HttpPost]
-   public async Task<IActionResult> Edit(EmployeeVM employee)
+    public async Task<IActionResult> Edit(int id, int departmentId, int jobRoleId, EmployeeVM employee)
    {
-      if (ModelState.IsValid)
-      {
-         var response = await _httpClient.PutAsJsonAsync<EmployeeVM>($"Employees/{employee.Id}", employee);
-         if (response.IsSuccessStatusCode)
-         {
-            return RedirectToAction("Index");
-         }
-         else
-         {
-            ModelState.AddModelError(string.Empty, $"Error: {response.StatusCode} - {response.ReasonPhrase}");
-         }
-      }
-      return View(employee);
-   }
+      if (!ModelState.IsValid)
+    {
+        return View(employee);
+    }
+      employee.DepartmentId = departmentId;
+      employee.JobRoleId = jobRoleId;
+    var updateResponse = await _httpClient.PutAsJsonAsync<EmployeeVM>($"Employees/{id}", employee);
+    
+    if (updateResponse.IsSuccessStatusCode)
+    {
+        return RedirectToAction("Index");
+    }
+    else
+    {
+        ModelState.AddModelError(string.Empty, $"Error: {updateResponse.StatusCode} - {updateResponse.ReasonPhrase}");
+        return View(employee);
+    }
+}
    public async Task<IActionResult> Delete(int id)
    {
       var response = await _httpClient.DeleteAsync($"Employees/{id}");

@@ -5,16 +5,18 @@ namespace EmployeeManagementSystemWebApi.Models;
 
 public class Employee
 {
-   public int Id { get; set; }
-   public string Name { get; set; } = string.Empty;
-   public string Position { get; set; } = string.Empty;
-   [ForeignKey("Department")]
-   public int DepartmentId { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    [ForeignKey("Department")]
+    public int DepartmentId { get; set; }
+    [ForeignKey("JobRole")]
+    public int JobRoleId { get; set; }
 
-   // Navigation property for related department
-   [ValidateNever]
-   public Department Department { get; set; } = null!;
-   [ValidateNever]
-   public ICollection<EmployeeProjectAssignment> ProjectAssignments { get; set; } = new List<EmployeeProjectAssignment>();
+    // Navigation property 
+    [ValidateNever]
+    public Department Department { get; set; } = null!;
+    [ValidateNever]
+    public JobRole JobRole { get; set; } = null!;
+
 
 }

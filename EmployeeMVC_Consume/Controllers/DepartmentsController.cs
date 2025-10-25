@@ -5,7 +5,6 @@ namespace EmployeeMVC_Consume.Controllers;
 
 public class DepartmentsController : Controller
 {
-   private readonly IHttpClientFactory _httpClientfactory;
    private readonly HttpClient _httpClient;
    public DepartmentsController(IHttpClientFactory httpClient)
    {

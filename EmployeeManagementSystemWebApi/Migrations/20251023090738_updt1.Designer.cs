@@ -3,6 +3,7 @@ using EmployeeManagementSystemWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeManagementSystemWebApi.Migrations
 {
     [DbContext(typeof(EmployeeDbContext))]
-    partial class EmployeeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023090738_updt1")]
+    partial class updt1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,10 +55,11 @@ namespace EmployeeManagementSystemWebApi.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("JobRoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -63,32 +67,7 @@ namespace EmployeeManagementSystemWebApi.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("JobRoleId");
-
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("EmployeeManagementSystemWebApi.Models.JobRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BaseSalary")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobRole");
                 });
 
             modelBuilder.Entity("EmployeeManagementSystemWebApi.Models.Employee", b =>
@@ -99,15 +78,7 @@ namespace EmployeeManagementSystemWebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EmployeeManagementSystemWebApi.Models.JobRole", "JobRole")
-                        .WithMany()
-                        .HasForeignKey("JobRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
-
-                    b.Navigation("JobRole");
                 });
 
             modelBuilder.Entity("EmployeeManagementSystemWebApi.Models.Department", b =>
