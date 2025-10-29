@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeManagementSystemWebApi.Models;
+using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 
 namespace EmployeeManagementSystemWebApi.Controllers;
 
@@ -8,25 +9,27 @@ namespace EmployeeManagementSystemWebApi.Controllers;
 [ApiController]
 public class DepartmentsController : ControllerBase
 {
-    private readonly EmployeeDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public DepartmentsController(EmployeeDbContext context)
+    public DepartmentsController(IUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
+
 
     // GET: api/Departments
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
     {
-        return await _context.Departments.ToListAsync();
+        var departments = await _unitOfWork.Departments.GetAllAsync();
+        return Ok(departments);
     }
 
     // GET: api/Departments/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Department>> GetDepartment(int id)
     {
-        var department = await _context.Departments.FirstOrDefaultAsync(e => e.Id==id);
+        var department = await _unitOfWork.Departments.GetByIdAsync(id);
 
         if (department == null)
         {
@@ -39,22 +42,31 @@ public class DepartmentsController : ControllerBase
     // PUT: api/Departments/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutDepartment(int id, Department department)
+    public async Task<IActionResult> PutDepartment(int id, [FromForm] Department department)
     {
         if (id != department.Id)
         {
             return BadRequest();
         }
 
-        _context.Entry(department).State = EntityState.Modified;
+        var existingDepartment = await _unitOfWork.Departments.GetByIdAsync(id);
+        if (existingDepartment == null)
+        {
+            return NotFound();
+        }
+
+        existingDepartment.Name = department.Name;
+        existingDepartment.Description = department.Description;
+
+        await _unitOfWork.Departments.UpdateAsync(department);
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!DepartmentExists(id))
+            if ( await _unitOfWork.Departments.GetByIdAsync(id) == null)
             {
                 return NotFound();
             }
@@ -70,51 +82,36 @@ public class DepartmentsController : ControllerBase
     // POST: api/Departments
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Department>> PostDepartment(Department department)
+    public async Task<ActionResult<Department>> PostDepartment([FromForm] Department department)
     {
-        if(department == null)
+        if (department == null)
         {
             return BadRequest();
         }
-        try
-        {
-            var existingDepartment = await _context.Departments
-                .FirstOrDefaultAsync(d => d.Name == department.Name);
-            if (existingDepartment != null)
-            {
-                return Conflict("A department with the same name already exists.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An error occurred while checking for existing departments: " + ex.Message);
-        }
 
-        _context.Departments.Add(department);
-     
-        await _context.SaveChangesAsync();
+        // Existing department with same name check validation will be added in future
 
+        await _unitOfWork.Departments.AddAsync(department);
+        await _unitOfWork.SaveChangesAsync();
         return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
+
     }
 
     // DELETE: api/Departments/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDepartment(int id)
     {
-        var department = await _context.Departments.FindAsync(id);
+        var department = await _unitOfWork.Departments.GetByIdAsync(id);
         if (department == null)
         {
             return NotFound();
         }
 
-        _context.Departments.Remove(department);
-        await _context.SaveChangesAsync();
+        await _unitOfWork.Departments.DeleteAsync(id);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
     }
 
-    private bool DepartmentExists(int id)
-    {
-        return _context.Departments.Any(e => e.Id == id);
-    }
+    
 }

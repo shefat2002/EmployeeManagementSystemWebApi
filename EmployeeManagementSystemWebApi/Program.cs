@@ -1,4 +1,6 @@
 using EmployeeManagementSystemWebApi.Models;
+using EmployeeManagementSystemWebApi.Repositories;
+using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -8,14 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-
-builder.Services.AddSwaggerGen();
-
+// Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<EmployeeDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Add Controllers
+// Configure JSON options to handle reference loops
 builder.Services.AddControllers(options =>
 {
     options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
@@ -29,6 +30,17 @@ builder.Services.AddControllers(options =>
     }));
 });
 
+// Add Repository and Services
+//builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 
+
+
+
+// Add Swagger/OpenAPI support
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
