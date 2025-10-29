@@ -34,5 +34,5 @@ public class EmployeeSalary
 
     // Navigation Property
     [ValidateNever]
-    public Employee Employee { get; set; } = null!;
+    public virtual Employee Employee { get; set; } = null!;
 }

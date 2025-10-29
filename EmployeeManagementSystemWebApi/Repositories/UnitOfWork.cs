@@ -9,6 +9,8 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeRepository Employees { get; private set; }
     public IDepartmentRepository Departments { get; private set; }
     public IJobRoleRepository JobRoles { get; private set; }
+    public IEmployeeSalaryRepository EmployeeSalaries { get; private set; }
+    public IPayrollRepository Payrolls { get; private set; }
 
     public UnitOfWork(EmployeeDbContext context)
     {
@@ -16,6 +18,8 @@ public class UnitOfWork : IUnitOfWork
         Employees = new EmployeeRepository(_context);
         Departments = new DepartmentRepository(_context);
         JobRoles = new JobRoleRepository(_context);
+        EmployeeSalaries = new EmployeeSalaryRepository(_context);
+        Payrolls = new PayrollRepository(_context);
     }
 
 
