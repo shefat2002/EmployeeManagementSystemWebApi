@@ -24,4 +24,28 @@ public class LeaveApplicationRepository : Repository<LeaveApplication>, ILeaveAp
             .OrderByDescending(la => la.StartDate)
             .ToListAsync();
     }
+    public async Task<IEnumerable<LeaveApplication>> GetRejectedAsync()
+    {
+        return await AppDbContext.LeaveApplications
+            .Where(la => la.Status == Enums.LeaveStatus.Rejected)
+            .OrderByDescending(la => la.StartDate)
+            .ToListAsync();
+    }
+    public async Task<IEnumerable<LeaveApplication>> GetApprovedAsync()
+    {
+        return await AppDbContext.LeaveApplications
+            .Where(la => la.Status == Enums.LeaveStatus.Approved)
+            .OrderByDescending(la => la.StartDate)
+            .ToListAsync();
+    }
+    public async Task<IEnumerable<LeaveApplication>> GetApprovedByMonthAsync(int employeeId, int month, int year)
+    {
+        return await AppDbContext.LeaveApplications
+            .Where(la => la.EmployeeId == employeeId &&
+                         la.Status == Enums.LeaveStatus.Approved &&
+                         la.StartDate.Month == month &&
+                         la.StartDate.Year == year)
+            .OrderByDescending(la => la.StartDate)
+            .ToListAsync();
+    }
 }

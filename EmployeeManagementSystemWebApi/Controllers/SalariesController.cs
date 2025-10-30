@@ -74,10 +74,25 @@ public class SalariesController : ControllerBase
         salary.TransportAllowance = updatedStructure.TransportAllowance;
         salary.ProvidentFundPercentage = updatedStructure.ProvidentFundPercentage;
         salary.TaxPercentage = updatedStructure.TaxPercentage;
+        await _unitOfWork.EmployeeSalaries.UpdateAsync(salary);
         await _unitOfWork.SaveChangesAsync();
         return NoContent();
     }
 
-    
+    // DELETE: api/Salary/structure/5
+    [HttpDelete("structure/{employeeId}")]
+    public async Task<IActionResult> DeleteSalaryStructure(int employeeId)
+    {
+        var salary = await _unitOfWork.EmployeeSalaries.GetByEmployeeIdAsync(employeeId);
+        if (salary == null)
+        {
+            return NotFound("Salary structure not found for this employee.");
+        }
+        await _unitOfWork.EmployeeSalaries.DeleteAsync(employeeId);
+        await _unitOfWork.SaveChangesAsync();
+        return NoContent();
+    }
+
+
 
 }
