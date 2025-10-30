@@ -1,4 +1,4 @@
-﻿using EmployeeManagementSystemWebApi.Models;
+﻿using EmployeeManagementSystemWebApi.Data;
 using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 
 namespace EmployeeManagementSystemWebApi.Repositories;

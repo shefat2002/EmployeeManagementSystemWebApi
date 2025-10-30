@@ -1,4 +1,4 @@
-﻿namespace EmployeeManagementSystemWebApi.Models;
+﻿namespace EmployeeManagementSystemWebApi.Models.Enums;
 
 public class Enums
 {

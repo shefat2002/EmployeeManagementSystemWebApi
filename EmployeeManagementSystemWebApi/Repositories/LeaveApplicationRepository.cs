@@ -1,4 +1,6 @@
-﻿using EmployeeManagementSystemWebApi.Models;
+﻿using EmployeeManagementSystemWebApi.Data;
+using EmployeeManagementSystemWebApi.Models;
+using EmployeeManagementSystemWebApi.Models.Enums;
 using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

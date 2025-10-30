@@ -1,7 +1,7 @@
 ﻿using EmployeeManagementSystemWebApi.Models;
 using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using static EmployeeManagementSystemWebApi.Models.Enums;
+using static EmployeeManagementSystemWebApi.Models.Enums.Enums;
 
 namespace EmployeeManagementSystemWebApi.Controllers;
 

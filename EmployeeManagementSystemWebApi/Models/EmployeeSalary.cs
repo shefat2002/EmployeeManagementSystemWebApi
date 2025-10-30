@@ -6,7 +6,6 @@ namespace EmployeeManagementSystemWebApi.Models;
 
 public class EmployeeSalary
 {
-    [Key]
     public int Id { get; set; }
 
     [ForeignKey("Employee")]

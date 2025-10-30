@@ -10,12 +10,19 @@ public class Employee
     [Required]
     [StringLength(30)]
     public string Name { get; set; } = string.Empty;
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
     [ForeignKey("Department")]
     public int DepartmentId { get; set; }
     [ForeignKey("JobRole")]
     public int JobRoleId { get; set; }
 
-    // Navigation property 
+    // Password hashing properties
+    public byte[] PasswordHash { get; set; } = null!;
+    public byte[] PasswordSalt { get; set; } = null!;
+
+    // Navigation properties
     [ValidateNever]
     public Department Department { get; set; } = null!;
     [ValidateNever]

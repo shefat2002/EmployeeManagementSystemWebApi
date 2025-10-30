@@ -1,8 +1,13 @@
-using EmployeeManagementSystemWebApi.Models;
+using EmployeeManagementSystemWebApi.Data;
 using EmployeeManagementSystemWebApi.Repositories;
 using EmployeeManagementSystemWebApi.Repositories.Interfaces;
+using EmployeeManagementSystemWebApi.Services.AuthService;
+using EmployeeManagementSystemWebApi.Services.Interfaces.AuthServiceInterface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -30,10 +35,39 @@ builder.Services.AddControllers(options =>
     }));
 });
 
-// Add Repository and Services
-//builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 
+// Add Repository
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IJobRoleRepository, JobRoleRepository>();
+builder.Services.AddScoped<IEmployeeSalaryRepository, EmployeeSalaryRepository>();
+builder.Services.AddScoped<IPayrollRepository, PayrollRepository>();
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<ILeaveApplicationRepository, LeaveApplicationRepository>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // scoped because it depends on DbContext which is scoped
+
+
+
+// Add Services
+builder.Services.AddTransient<ITokenService, TokenService>(); // transient because it is stateless
+builder.Services.AddTransient<IAuthService, AuthService>(); // transient because it is stateless
+
+// Configure Jwt Authentication
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value!)
+            ),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 
 // Add Swagger/OpenAPI support
@@ -66,6 +100,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

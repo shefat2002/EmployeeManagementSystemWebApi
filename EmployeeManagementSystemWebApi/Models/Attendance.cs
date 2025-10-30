@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
-using static EmployeeManagementSystemWebApi.Models.Enums;
+using static EmployeeManagementSystemWebApi.Models.Enums.Enums;
 
 namespace EmployeeManagementSystemWebApi.Models;
 

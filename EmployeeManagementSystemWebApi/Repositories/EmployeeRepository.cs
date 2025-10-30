@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystemWebApi.Models;
+﻿using EmployeeManagementSystemWebApi.Data;
+using EmployeeManagementSystemWebApi.Models;
 using EmployeeManagementSystemWebApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,12 @@ public class EmployeeRepository : Repository<Employee>, IEmployeeRepository
             .Include(e => e.JobRole)
             .Include(e => e.EmployeeSalary)
             .ToListAsync();
+    }
+    public async Task<Employee?> GetEmployeeByEmailAsync(string email)
+    {
+        return await AppDbContext.Employees
+            .Include(e => e.Department)
+            .Include(e => e.JobRole)
+            .FirstOrDefaultAsync(e => e.Email.ToLower() == email.ToLower());
     }
 }

@@ -6,4 +6,5 @@ public interface IEmployeeRepository : IRepository<Employee>
 {
     Task<IEnumerable<Employee>> GetAllEmployeesWithDetailsAsync();
     Task<Employee?> GetEmployeeWithDetailsAsync(int id);
+    Task<Employee?> GetEmployeeByEmailAsync(string email);
 }

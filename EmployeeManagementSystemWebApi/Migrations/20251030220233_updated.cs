@@ -6,21 +6,72 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeManagementSystemWebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class @new : Migration
+    public partial class updated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
-                name: "BaseSalary",
-                table: "JobRole",
-                type: "decimal(18,2)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
+            migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
-                name: "Attendance",
+                name: "JobRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobTitle = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    JobRoleId = table.Column<int>(type: "int", nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Employees_JobRoles_JobRoleId",
+                        column: x => x.JobRoleId,
+                        principalTable: "JobRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attendances",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,9 +85,9 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attendance", x => x.Id);
+                    table.PrimaryKey("PK_Attendances", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attendance_Employees_EmployeeId",
+                        name: "FK_Attendances_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -44,7 +95,7 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeSalary",
+                name: "EmployeeSalaries",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -59,9 +110,9 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeSalary", x => x.Id);
+                    table.PrimaryKey("PK_EmployeeSalaries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EmployeeSalary_Employees_EmployeeId",
+                        name: "FK_EmployeeSalaries_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -69,7 +120,7 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LeaveApplication",
+                name: "LeaveApplications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -84,9 +135,9 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeaveApplication", x => x.Id);
+                    table.PrimaryKey("PK_LeaveApplications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LeaveApplication_Employees_EmployeeId",
+                        name: "FK_LeaveApplications_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -94,7 +145,7 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payroll",
+                name: "Payrolls",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -119,9 +170,9 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payroll", x => x.Id);
+                    table.PrimaryKey("PK_Payrolls", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payroll_Employees_EmployeeId",
+                        name: "FK_Payrolls_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -129,49 +180,83 @@ namespace EmployeeManagementSystemWebApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendance_EmployeeId",
-                table: "Attendance",
-                column: "EmployeeId");
+                name: "IX_Attendances_EmployeeId_Date",
+                table: "Attendances",
+                columns: new[] { "EmployeeId", "Date" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeSalary_EmployeeId",
-                table: "EmployeeSalary",
+                name: "IX_Departments_Name",
+                table: "Departments",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_DepartmentId",
+                table: "Employees",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_Email",
+                table: "Employees",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_JobRoleId",
+                table: "Employees",
+                column: "JobRoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_Name",
+                table: "Employees",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeSalaries_EmployeeId",
+                table: "EmployeeSalaries",
                 column: "EmployeeId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeaveApplication_EmployeeId",
-                table: "LeaveApplication",
-                column: "EmployeeId");
+                name: "IX_JobRoles_JobTitle",
+                table: "JobRoles",
+                column: "JobTitle",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payroll_EmployeeId",
-                table: "Payroll",
-                column: "EmployeeId");
+                name: "IX_LeaveApplications_EmployeeId_StartDate_EndDate",
+                table: "LeaveApplications",
+                columns: new[] { "EmployeeId", "StartDate", "EndDate" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payrolls_EmployeeId_PayDate",
+                table: "Payrolls",
+                columns: new[] { "EmployeeId", "PayDate" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Attendance");
+                name: "Attendances");
 
             migrationBuilder.DropTable(
-                name: "EmployeeSalary");
+                name: "EmployeeSalaries");
 
             migrationBuilder.DropTable(
-                name: "LeaveApplication");
+                name: "LeaveApplications");
 
             migrationBuilder.DropTable(
-                name: "Payroll");
+                name: "Payrolls");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "BaseSalary",
-                table: "JobRole",
-                type: "int",
-                nullable: false,
-                oldClrType: typeof(decimal),
-                oldType: "decimal(18,2)");
+            migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "JobRoles");
         }
     }
 }
