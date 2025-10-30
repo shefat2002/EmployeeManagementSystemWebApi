@@ -6,10 +6,10 @@ namespace EmployeeManagementSystemWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PayrollController : ControllerBase
+public class PayrollsController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
-    public PayrollController(IUnitOfWork unitOfWork)
+    public PayrollsController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }

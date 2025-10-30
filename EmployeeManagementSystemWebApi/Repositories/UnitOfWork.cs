@@ -11,6 +11,8 @@ public class UnitOfWork : IUnitOfWork
     public IJobRoleRepository JobRoles { get; private set; }
     public IEmployeeSalaryRepository EmployeeSalaries { get; private set; }
     public IPayrollRepository Payrolls { get; private set; }
+    public IAttendanceRepository Attendances { get; private set; }
+    public ILeaveApplicationRepository LeaveApplications { get; private set; }
 
     public UnitOfWork(EmployeeDbContext context)
     {
@@ -20,6 +22,8 @@ public class UnitOfWork : IUnitOfWork
         JobRoles = new JobRoleRepository(_context);
         EmployeeSalaries = new EmployeeSalaryRepository(_context);
         Payrolls = new PayrollRepository(_context);
+        Attendances = new AttendanceRepository(_context);
+        LeaveApplications = new LeaveApplicationRepository(_context);
     }
 
 

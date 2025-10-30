@@ -7,6 +7,8 @@ public interface IUnitOfWork : IDisposable
     IJobRoleRepository JobRoles { get; }
     IEmployeeSalaryRepository EmployeeSalaries { get; }
     IPayrollRepository Payrolls { get; }
+    IAttendanceRepository Attendances { get; }
+    ILeaveApplicationRepository LeaveApplications { get; }
 
     Task<int> SaveChangesAsync();
 }
