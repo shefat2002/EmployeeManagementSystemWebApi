@@ -31,8 +31,6 @@ public class EmployeeRepository : Repository<Employee>, IEmployeeRepository
     public async Task<Employee?> GetEmployeeByEmailAsync(string email)
     {
         return await AppDbContext.Employees
-            .Include(e => e.Department)
-            .Include(e => e.JobRole)
             .FirstOrDefaultAsync(e => e.Email.ToLower() == email.ToLower());
     }
 }

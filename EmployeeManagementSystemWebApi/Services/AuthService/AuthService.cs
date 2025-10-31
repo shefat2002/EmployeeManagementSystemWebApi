@@ -47,13 +47,11 @@ public class AuthService : IAuthService
 
     public async Task<Employee> Register(RegisterDto register)
     {
-        var existingEmployee = _unitOfWork.Employees
+        var existingEmployee = await _unitOfWork.Employees
             .GetEmployeeByEmailAsync(register.Email);
-
         if (existingEmployee != null)
         {
-            throw new Exception($"Employee with {register.Email} already exists.");
-            
+            throw new Exception("Employee with this email already exists.");
         }
 
         CreatePasswordHash(register.Password, out byte[] passwordHash, out byte[] passwordSalt);
